@@ -1,0 +1,29 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    container_name: mysql
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - ./.env.docker
+    ports:
+      - '3306:3306'
+    healthcheck:
+      test: "mysql -uroot -p$$MYSQL_ROOT_PASSWORD $$MYSQL_DATABASE -e 'select 1'"
+      interval: 10s
+      timeout: 25s
+      retries: 3
+
+  bot:
+    build: .
+    env_file:
+      - ./.env.docker
+    ports:
+      - "5009:5009"
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+
