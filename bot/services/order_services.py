@@ -1,18 +1,17 @@
 from datetime import date
 from typing import Optional, List
 from sqlalchemy import select, and_, text
-
 from settings import SessionLocal
 from bot.models import Order
 
 
 def get_order(telegram_user_id: int) -> Optional[Order]:
     with SessionLocal() as session:
-        q = session.execute(
+        stmt = session.execute(
             select(Order).where(
                 and_(Order.telegram_user_id == telegram_user_id, Order.created_date == date.today(),
                      Order.paid.is_(False))))
-        return q.scalar_one_or_none()
+        return stmt.scalar_one_or_none()
 
 
 def create_order(telegram_user_id: int) -> Order:

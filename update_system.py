@@ -40,4 +40,13 @@ def schedule_actions():
         time.sleep(1)
 
 
-schedule_actions()
+if __name__ == "__main__":
+
+    while True:
+        try:
+            schedule_actions()
+        except Exception as e:
+            time.sleep(5)
+            logger.error(f'Ошибка обновления системы \n {e}')
+        continue
+
